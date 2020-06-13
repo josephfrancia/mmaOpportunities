@@ -100,7 +100,7 @@ avg_team1_ml = merged_data.groupby(['team1', 'team2'])['team1MoneyLine'].agg({'a
 avg_team2_ml = merged_data.groupby(['team1', 'team2'])['team2MoneyLine'].agg({'average_team1_m2':'mean'})
 
 merged_data = pd.merge(merged_data, best_team1_ml_df, on=['team1', 'team2'], how='outer')
-merged_data = pd.merge(merged_data, , on=['team1', 'team2'], how='outer')
+merged_data = pd.merge(merged_data, num_unique_sportsbooks, on=['team1', 'team2'], how='outer')
 merged_data = pd.merge(merged_data, best_team2_ml_df, on=['team1', 'team2'], how='outer')
 merged_data = pd.merge(merged_data, consensus_team1_prob, on=['team1', 'team2'], how='outer')
 merged_data = pd.merge(merged_data, consensus_team2_prob, on=['team1', 'team2'], how='outer')
