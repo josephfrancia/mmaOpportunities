@@ -6,6 +6,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 import time as t
+import random
 
 from sportsbooks import cleanMoneylineData
 from sportsbooks import getJuice
@@ -35,7 +36,7 @@ fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel")
 #betonline
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://www.betonline.ag/sportsbook/martial-arts/mma")
-t.sleep(10)
+t.sleep(random.randint(10, 20))
 betonline_data_html = driver.find_elements_by_css_selector('.bdevtt')
 betonline_data = np.array([x.text for x in betonline_data_html])
 indices_to_remove = []
@@ -55,7 +56,7 @@ betonline_df = cleanMoneylineData(betonline_names, betonline_odds, "betonline")
 #bovada
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://www.bovada.lv/sports/ufc-mma")
-t.sleep(30)
+t.sleep(random.randint(30, 40))
 bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
 bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
 bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
