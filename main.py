@@ -75,8 +75,10 @@ mybookie_odds = mybookie_odds[np.logical_not(pd.Series(mybookie_odds).isin([' - 
 listOfOverUnders = ["&" in x for x in mybookie_odds]
 listOfOverUnders = [not x for x in listOfOverUnders]
 mybookie_odds = mybookie_odds[listOfOverUnders]
-mybookie_odds = mybookie_odds[0:76]
-mybookie_names = mybookie_names[0:76]
+notLiveOdds = [" LIVE " not in x for x in mybookie_names]
+mybookie_names = mybookie_names[notLiveOdds]
+mybookie_odds = mybookie_odds
+mybookie_names = mybookie_names
 
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
