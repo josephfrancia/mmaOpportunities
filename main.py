@@ -46,7 +46,7 @@ for i in range(0, len(betonline_data)):
 
 betonline_data = np.delete(betonline_data, indices_to_remove)
 betonline_odds = [x for x in betonline_data if bool(re.search("^\\+", x)) or bool(re.search("^\\-", x))]
-betonline_names = [x for x in betonline_data if re.sub('[\s+]', '', re.sub('-', '', x)).isalpha()
+betonline_names = [x for x in betonline_data if re.sub('[\s+]', '', re.sub('-', '', (re.sub('\.', '', x)))).isalpha()
                   and len(x) > 1 
                   and x != "\no\n"
                   and not bool(re.search("\\:", x))]
