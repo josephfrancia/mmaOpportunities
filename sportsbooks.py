@@ -7,6 +7,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 import re
 import time as t
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def getImpliedOdds(moneyLine): 
     if moneyLine >= 100:
         impliedOdds = 100 / (100 + moneyLine)

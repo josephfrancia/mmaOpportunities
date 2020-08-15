@@ -12,6 +12,7 @@ from sportsbooks import cleanMoneylineData
 from sportsbooks import getJuice
 from sportsbooks import getCasinoProfit
 from sportsbooks import getImpliedOdds
+from sportsbooks import is_number
 
 #draftkings
 draftkings_url = 'https://sportsbook.draftkings.com/leagues/mma/2162?category=fight-lines&subcategory=moneyline'
@@ -65,22 +66,16 @@ bovada_names = [x.text for x in bovada_names_html]
 bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
 
 #mybookie
-mybookie_url = 'https://mybookie.ag/sportsbook/ufc/'
-mybookie_soup_object = BeautifulSoup(requests.get(mybookie_url).text)
-mybookie_names_html = mybookie_soup_object.select(".text-truncate")
-mybookie_odds_html = mybookie_soup_object.select(".lines-odds")
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get('https://mybookie.ag/sportsbook/ufc/')
+t.sleep(10)
+mybookie_names_html = driver.find_elements_by_css_selector(".m-0")
+mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
 mybookie_names = np.array([x.text for x in mybookie_names_html])
+mybookie_names = mybookie_names[1:57]
 mybookie_odds = np.array([x.text for x in mybookie_odds_html])
-mybookie_odds = mybookie_odds[np.logical_not(pd.Series(mybookie_odds).isin([' - ', ' -  ']))]
-listOfOverUnders = ["&" in x for x in mybookie_odds]
-listOfOverUnders = [not x for x in listOfOverUnders]
-mybookie_odds = mybookie_odds[listOfOverUnders]
-notLiveOdds = [" LIVE " not in x for x in mybookie_names]
-mybookie_names = mybookie_names[notLiveOdds]
-mybookie_odds = mybookie_odds
-mybookie_names = mybookie_names
-
-mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
+mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
+mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie") 
 
 #merging data 
 merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df])
