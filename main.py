@@ -14,6 +14,7 @@ from sportsbooks import getCasinoProfit
 from sportsbooks import getImpliedOdds
 from sportsbooks import is_number
 
+
 #draftkings
 draftkings_url = 'https://sportsbook.draftkings.com/leagues/mma/2162?category=fight-lines&subcategory=moneyline'
 draftkings_soup_object = BeautifulSoup(requests.get(draftkings_url).text)
@@ -72,7 +73,7 @@ t.sleep(10)
 mybookie_names_html = driver.find_elements_by_css_selector(".m-0")
 mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
 mybookie_names = np.array([x.text for x in mybookie_names_html])
-mybookie_names = mybookie_names[1:57]
+mybookie_names = mybookie_names[124:192]
 mybookie_odds = np.array([x.text for x in mybookie_odds_html])
 mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie") 
@@ -120,3 +121,8 @@ for x in range(0, len(valuable_data)):
 
     if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
         print("Bet on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_m2"])[x])) 
+
+if(len(merged_data['sportsbook_y'] == 5) > 0):
+    print("All 5 sportsbooks are being scraped") 
+else: 
+    print("Not all 5 sportsbooks are being scraped")
