@@ -69,14 +69,22 @@ bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada")
 #mybookie
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get('https://mybookie.ag/sportsbook/ufc/')
-t.sleep(10)
-mybookie_names_html = driver.find_elements_by_css_selector(".m-0")
+
 mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
-mybookie_names = np.array([x.text for x in mybookie_names_html])
-mybookie_names = mybookie_names[124:192]
 mybookie_odds = np.array([x.text for x in mybookie_odds_html])
 mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
-mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie") 
+
+mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
+mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
+mybookie_names = []
+i = 0
+while i < len(mybookie_html_cleaned): 
+    if i == 1 or ((i-1)%4==0): 
+        mybookie_names.append(mybookie_html_cleaned[i])
+    i += 1
+mybookie_names = [x.split('\n') for x in mybookie_names]
+mybookie_names = sum(mybookie_names, [])
+mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
 #merging data 
 merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df])
