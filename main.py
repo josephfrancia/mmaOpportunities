@@ -7,6 +7,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import re
 import time as t
 import random
+from itertools import compress 
 
 from sportsbooks import cleanMoneylineData
 from sportsbooks import getJuice
@@ -46,6 +47,8 @@ driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://sportsbook.fanduel.com/sports/navigation/7287.1/9886.3")
 fanduel_raw_data = driver.find_elements_by_class_name('selection-column')
 fanduel_data = [x.text.split('\n') for x in fanduel_raw_data]
+valid_indices = [len(x)==2 for x in fanduel_data]
+fanduel_data = list(compress(fanduel_data, valid_indices)) 
 fanduel_names = [x[0] for x in fanduel_data]
 fanduel_odds = [x[1] for x in fanduel_data]
 
@@ -102,6 +105,8 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
+
+
 #merging data 
 merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df])
 
@@ -150,7 +155,7 @@ valuable_data = merged_data
 valuable_data = valuable_data.reset_index()
 for x in range(0, len(valuable_data)):
     if valuable_data["bestDeviationTeam1"][x] > 0 and valuable_data["bestDeviationTeam1"][x] > valuable_data["bestDeviationTeam2"][x] and valuable_data["team1MoneyLine"][x] == valuable_data["bestTeam1MoneyLine"][x]: 
-        print("Bet on " + np.array(valuable_data["team1"])[x] + " at " + str(np.array(valuable_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + 'sportsbooks') 
+        print("Bet on " + np.array(valuable_data["team1"])[x] + " at " + str(np.array(valuable_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
 
     if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
         print("Bet on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
