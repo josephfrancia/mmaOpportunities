@@ -34,6 +34,17 @@ def getJuice(moneyLines1, moneyLines2):
         juice[x] = getCasinoProfit([moneyLines1[x], moneyLines2[x]])
     return(juice)
 
+def americanOddsToDecimalOdds(americanOdds): 
+    if(americanOdds >= 100):
+        return(americanOdds / 100)
+    
+    if(americanOdds < 0): 
+        return(100 / abs(americanOdds))
+
+def getKellyBet(wagerOdds, probabilityToWin, bankRoll):
+    kellyBet = (probabilityToWin - ((1 - probabilityToWin) / americanOddsToDecimalOdds(wagerOdds))) * bankRoll
+    return(kellyBet)
+
 def cleanMoneylineData(names, odds, sportsbook): 
     team1Names = np.empty(len(names), dtype=object)
     team1MoneyLine = np.empty(len(names), dtype=object)
