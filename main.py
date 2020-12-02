@@ -106,8 +106,19 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
+#bookmaker
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://www.bookmaker.eu/live-lines/martial-arts")
+t.sleep(random.randint(10, 20))
+bookmaker_data_html = driver.find_elements_by_css_selector('.oddsD')
+bookmaker_data = np.array([x.text for x in bookmaker_data_html])
+bookmaker_cleaned_data = [x.split('\n') for x in bookmaker_data]
+bookmaker_names = [x[0] for x in bookmaker_cleaned_data]
+bookmaker_odds = [int(x[3]) for x in bookmaker_cleaned_data]
+bookmaker_df = cleanMoneylineData(bookmaker_names, bookmaker_odds, "bookmaker")
+
 #merging data 
-merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df])
+merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df, bookmaker_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
