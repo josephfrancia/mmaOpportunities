@@ -23,6 +23,15 @@ def getImpliedOdds(moneyLine):
         impliedOdds = None
     return(impliedOdds)
 
+def getCutoffMoneyLine(probabilityOfWinning): 
+    if probabilityOfWinning < .5:
+        moneyLine = (100 / probabilityOfWinning) - 100
+    elif probabilityOfWinning >= .5:
+        moneyLine = -1 * (100 * probabilityOfWinning) / (1 - probabilityOfWinning)
+    else: 
+        moneyLine = None
+    return(moneyLine)
+
 def getCasinoProfit(moneyLines):
     overround = sum(np.array([getImpliedOdds(x) for x in moneyLines])) - 1
     vigorish = overround / (1 + overround)

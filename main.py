@@ -14,6 +14,7 @@ from sportsbooks import getJuice
 from sportsbooks import getCasinoProfit
 from sportsbooks import getImpliedOdds
 from sportsbooks import is_number
+from sportsbooks import getCutoffMoneyLine
 
 import pandas as pd
 import numpy as np
@@ -136,8 +137,12 @@ best_team2_ml_df['bestTeam2ImpliedOdds'] = best_team2_ml_df['bestTeam2MoneyLine'
 consensus_team1_prob = pd.DataFrame() 
 consensus_team2_prob = pd.DataFrame() 
 
-consensus_team1_prob['consensusTeam1Probability'] = merged_data.groupby(['team1', 'team2'])['true_probability_team1_wins'].apply(lambda x: np.mean(x))
-consensus_team2_prob['consensusTeam2Probability'] = merged_data.groupby(['team1', 'team2'])['true_probability_team2_wins'].apply(lambda x: np.mean(x))
+consensus_team1_prob['cutOffMLTeam1'] = [getCutoffMoneyLine(x) for x in consensus_team1_prob['consensusTeam1Probability']]
+consensus_team2_prob['cutOffMLTeam2'] = [getCutoffMoneyLine(x) for x in consensus_team2_prob['consensusTeam2Probability']]
+
+consensus_data = pd.merge(consensus_team1_prob, consensus_team2_prob, on=['team1', 'team2'], how='outer')
+consensus_data = pd.merge(consensus_data, num_unique_sportsbooks, on=['team1', 'team2'], how='outer')
+
 
 avg_team1_ml = pd.DataFrame() 
 avg_team2_ml = pd.DataFrame() 
