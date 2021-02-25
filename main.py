@@ -15,6 +15,8 @@ from sportsbooks import getCasinoProfit
 from sportsbooks import getImpliedOdds
 from sportsbooks import is_number
 from sportsbooks import getCutoffMoneyLine
+from sportsbooks import getKellyBet
+
 
 
 #draftkings
