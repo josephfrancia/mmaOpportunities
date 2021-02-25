@@ -97,8 +97,8 @@ t.sleep(random.randint(10, 20))
 bookmaker_data_html = driver.find_elements_by_css_selector('.oddsD')
 bookmaker_data = np.array([x.text for x in bookmaker_data_html])
 bookmaker_cleaned_data = [x.split('\n') for x in bookmaker_data]
-bookmaker_names = [x[0] for x in bookmaker_cleaned_data]
-bookmaker_odds = [int(x[3]) for x in bookmaker_cleaned_data]
+bookmaker_names = [x[0] for x in bookmaker_cleaned_data if len(x) == 4]
+bookmaker_odds = [int(x[3]) for x in bookmaker_cleaned_data if len(x) == 4]
 bookmaker_df = cleanMoneylineData(bookmaker_names, bookmaker_odds, "bookmaker")
 
 #merging data 
