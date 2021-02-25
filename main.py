@@ -16,23 +16,6 @@ from sportsbooks import getImpliedOdds
 from sportsbooks import is_number
 from sportsbooks import getCutoffMoneyLine
 
-import pandas as pd
-import numpy as np
-from bs4 import BeautifulSoup
-import requests 
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-import re
-import time as t
-import random
-
-from sportsbooks import cleanMoneylineData
-from sportsbooks import getJuice
-from sportsbooks import getCasinoProfit
-from sportsbooks import getImpliedOdds
-from sportsbooks import is_number
-from sportsbooks import getKellyBet
-from sportsbooks import americanOddsToDecimalOdds
 
 #draftkings
 draftkings_url = 'https://sportsbook.draftkings.com/leagues/mma/2162?category=fight-lines&subcategory=moneyline'
@@ -137,6 +120,9 @@ best_team2_ml_df['bestTeam2ImpliedOdds'] = best_team2_ml_df['bestTeam2MoneyLine'
 consensus_team1_prob = pd.DataFrame() 
 consensus_team2_prob = pd.DataFrame() 
 
+consensus_team1_prob['consensusTeam1Probability'] = merged_data.groupby(['team1', 'team2'])['true_probability_team1_wins'].apply(lambda x: np.mean(x))
+consensus_team2_prob['consensusTeam2Probability'] = merged_data.groupby(['team1', 'team2'])['true_probability_team2_wins'].apply(lambda x: np.mean(x))
+
 consensus_team1_prob['cutOffMLTeam1'] = [getCutoffMoneyLine(x) for x in consensus_team1_prob['consensusTeam1Probability']]
 consensus_team2_prob['cutOffMLTeam2'] = [getCutoffMoneyLine(x) for x in consensus_team2_prob['consensusTeam2Probability']]
 
@@ -177,6 +163,28 @@ for x in range(0, len(valuable_data)):
 
     if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
         print("Bet " + str(valuable_data["kellyBetTeam2"][x]) +  " on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
+        
+
+for x in range(0, len(valuable_data)):
+    if valuable_data["bestDeviationTeam1"][x] > 0 and valuable_data["bestDeviationTeam1"][x] > valuable_data["bestDeviationTeam2"][x] and valuable_data["team1MoneyLine"][x] == valuable_data["bestTeam1MoneyLine"][x]: 
+        print("Bet " + str(valuable_data["kellyBetTeam1"][x]) +  " on " + np.array(valuable_data["team1"])[x] + " at " + str(np.array(valuable_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
+
+    if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
+        print("Bet " + str(valuable_data["kellyBetTeam2"][x]) +  " on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
+
+print("")
+print("")
+print("End of betting recommendations, now time for betting cut offs...")
+print("")
+print("")
+for x in range(0, len(consensus_data)):
+    if consensus_data["sportsbook"][x] > 3: 
+        print("Betting cut off for " + str(consensus_data.index.get_level_values(0)[x]) +  " is " + str(np.array(consensus_data["cutOffMLTeam1"])[x]) + " when consensus chance of winning is " + str(np.array(consensus_data["consensusTeam1Probability"])[x])) 
+        print("Betting cut off for " + str(consensus_data.index.get_level_values(1)[x]) +  " is " + str(np.array(consensus_data["cutOffMLTeam2"])[x]) + " when consensus chance of winning is " + str(np.array(consensus_data["consensusTeam2Probability"])[x]))
+        
+        
+        
+        
 
 
 
