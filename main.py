@@ -166,14 +166,6 @@ for x in range(0, len(valuable_data)):
     if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
         print("Bet " + str(valuable_data["kellyBetTeam2"][x]) +  " on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
         
-
-for x in range(0, len(valuable_data)):
-    if valuable_data["bestDeviationTeam1"][x] > 0 and valuable_data["bestDeviationTeam1"][x] > valuable_data["bestDeviationTeam2"][x] and valuable_data["team1MoneyLine"][x] == valuable_data["bestTeam1MoneyLine"][x]: 
-        print("Bet " + str(valuable_data["kellyBetTeam1"][x]) +  " on " + np.array(valuable_data["team1"])[x] + " at " + str(np.array(valuable_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
-
-    if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
-        print("Bet " + str(valuable_data["kellyBetTeam2"][x]) +  " on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
-
 print("")
 print("")
 print("End of betting recommendations, now time for betting cut offs...")
