@@ -75,6 +75,7 @@ bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada")
 #mybookie
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get('https://mybookie.ag/sportsbook/ufc/')
+t.sleep(random.randint(10, 20))
 
 mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
 mybookie_odds = np.array([x.text for x in mybookie_odds_html])
@@ -104,7 +105,7 @@ bookmaker_odds = [int(x[3]) for x in bookmaker_cleaned_data if len(x) == 4]
 bookmaker_df = cleanMoneylineData(bookmaker_names, bookmaker_odds, "bookmaker")
 
 #merging data 
-merged_data = pd.concat([bovada_df, draftkings_df, fanduel_df, mybookie_df, betonline_df, bookmaker_df])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, bookmaker_df, mybookie_df, bovada_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
