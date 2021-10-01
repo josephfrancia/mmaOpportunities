@@ -94,8 +94,22 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
+
+#bet-mgm
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
+t.sleep(random.randint(30, 40))
+betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
+betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+betmgm_odds = [x.text for x in betmgm_odds_html][8:]
+betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
+betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
+betmgm_names = [x[:-3] for x in betmgm_names]
+betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
+
+
 #merging data 
-merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, bovada_df])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
