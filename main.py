@@ -44,7 +44,7 @@ fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel")
 
 #betonline
 driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://www.betonline.ag/sportsbook/martial-arts/mma")
+driver.get("https://classic.betonline.ag/sportsbook/martial-arts/mma")
 t.sleep(random.randint(10, 20))
 betonline_data_html = driver.find_elements_by_css_selector('.bdevtt')
 betonline_data = np.array([x.text for x in betonline_data_html])
