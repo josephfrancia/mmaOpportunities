@@ -8,6 +8,7 @@ import re
 import time as t
 import random
 from itertools import compress 
+from itertools import chain
 
 from sportsbooks import cleanMoneylineData
 from sportsbooks import getJuice
