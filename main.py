@@ -30,6 +30,18 @@ draftkings_odds = [int(x.text) for x in draftkings_odds_html if x.text != '']
 
 draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings") 
 
+#bet-mgm
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
+t.sleep(random.randint(10, 20))
+betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
+betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+betmgm_odds = [x.text for x in betmgm_odds_html][8:]
+betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
+betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
+betmgm_names = [x[:-3] for x in betmgm_names]
+betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
+
 #fanduel
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://sportsbook.fanduel.com/mma?tab=ufc-fights")
@@ -94,18 +106,6 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
-
-#bet-mgm
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
-t.sleep(random.randint(30, 40))
-betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
-betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
-betmgm_odds = [x.text for x in betmgm_odds_html][8:]
-betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
-betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
-betmgm_names = [x[:-3] for x in betmgm_names]
-betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
 
 
 #merging data 
@@ -193,5 +193,29 @@ for x in range(0, len(merged_data)):
         print("Bet on " + np.array(merged_data["team2"])[x] + " at " + str(np.array(merged_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(merged_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(merged_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(merged_data["average_team2_ml"])[x]) + ' as determiined by ' + str(merged_data['sportsbook_y'][x]) + ' sportsbooks') 
 
 
+draftkings_index = draftkings_df.index
+draftkings_number_of_rows = len(draftkings_index)
+
+fanduel_index = fanduel_df.index
+fanduel_number_of_rows = len(fanduel_index)
+
+betonline_index = betonline_df.index
+betonline_number_of_rows = len(betonline_index)
+
+mybookie_index = mybookie_df.index
+mybookie_number_of_rows = len(mybookie_index)
+
+betmgm_index = betmgm_df.index
+betmgm_number_of_rows = len(betmgm_index)
+
+bovada_index = bovada_df.index
+bovada_number_of_rows = len(bovada_index)
+
+print("Draftkings has " + str(draftkings_number_of_rows) + " rows")
+print("Fanduel has " + str(fanduel_number_of_rows) + " rows")
+print("Betonline has " + str(betonline_number_of_rows) + " rows")
+print("Mybookie has " + str(mybookie_number_of_rows) + " rows")
+print("Betmgm has " + str(betmgm_number_of_rows) + " rows")
+print("Bovada has " + str(bovada_number_of_rows) + " rows")
 
 
