@@ -32,13 +32,13 @@ draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftking
 
 #fanduel
 driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://sportsbook.fanduel.com/sports/navigation/7287.1/9886.3")
-fanduel_raw_data = driver.find_elements_by_class_name('selection-column')
+driver.get("https://sportsbook.fanduel.com/mma?tab=ufc-fights")
+fanduel_raw_data = driver.find_elements_by_css_selector('.bh')
 fanduel_data = [x.text.split('\n') for x in fanduel_raw_data]
-valid_indices = [len(x)==2 for x in fanduel_data]
-fanduel_data = list(compress(fanduel_data, valid_indices)) 
-fanduel_names = [x[0] for x in fanduel_data]
-fanduel_odds = [x[1] for x in fanduel_data]
+valid_indices = [len(x)==6 for x in fanduel_data]
+fanduel_relevant_data = list(compress(fanduel_data, valid_indices))
+fanduel_names = list(chain(*[[x[0], x[1]] for x in fanduel_relevant_data]))
+fanduel_odds = list(chain(*[[x[2], x[3]] for x in fanduel_relevant_data]))
 
 fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel") 
 
@@ -94,16 +94,6 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
-#bookmaker
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://www.bookmaker.eu/live-lines/martial-arts")
-t.sleep(random.randint(10, 20))
-bookmaker_data_html = driver.find_elements_by_css_selector('.oddsD')
-bookmaker_data = np.array([x.text for x in bookmaker_data_html])
-bookmaker_cleaned_data = [x.split('\n') for x in bookmaker_data]
-bookmaker_names = [x[0] for x in bookmaker_cleaned_data if len(x) == 4]
-bookmaker_odds = [int(x[3]) for x in bookmaker_cleaned_data if len(x) == 4]
-bookmaker_df = cleanMoneylineData(bookmaker_names, bookmaker_odds, "bookmaker")
 
 #merging data 
 merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, bookmaker_df, mybookie_df, bovada_df])
