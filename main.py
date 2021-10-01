@@ -96,7 +96,7 @@ mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
 
 #merging data 
-merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, bookmaker_df, mybookie_df, bovada_df])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, bovada_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
@@ -148,27 +148,15 @@ merged_data['bestDeviationTeam2'] = [x - y for x,y in zip(merged_data['consensus
 merged_data['kellyBetTeam2'] = [getKellyBet(x, y, 300) for x,y in zip(merged_data['bestTeam2MoneyLine'], merged_data['consensusTeam2Probability'])]
 merged_data['kellyBetTeam1'] = [getKellyBet(x, y, 300) for x,y in zip(merged_data['bestTeam1MoneyLine'], merged_data['consensusTeam1Probability'])]
 
-valuable_data = merged_data
-valuable_data = valuable_data.reset_index()
+merged_data = merged_data.reset_index()
 
-for x in range(0, len(valuable_data)):
-    if valuable_data["bestDeviationTeam1"][x] > 0 and valuable_data["bestDeviationTeam1"][x] > valuable_data["bestDeviationTeam2"][x] and valuable_data["team1MoneyLine"][x] == valuable_data["bestTeam1MoneyLine"][x]: 
-        print("Bet " + str(valuable_data["kellyBetTeam1"][x]) +  " on " + np.array(valuable_data["team1"])[x] + " at " + str(np.array(valuable_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team1_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
+for x in range(0, len(merged_data)):
+    if merged_data["bestDeviationTeam1"][x] > 0 and merged_data["bestDeviationTeam1"][x] > merged_data["bestDeviationTeam2"][x] and merged_data["team1MoneyLine"][x] == merged_data["bestTeam1MoneyLine"][x]: 
+        print("Bet " + str(merged_data["kellyBetTeam1"][x]) +  " on " + np.array(merged_data["team1"])[x] + " at " + str(np.array(merged_data["bestTeam1MoneyLine"])[x]) + " at " + np.array(merged_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(merged_data["bestDeviationTeam1"])[x]) + ' while average moneyline is ' +  str(np.array(merged_data["average_team1_ml"])[x]) + ' as determiined by ' + str(merged_data['sportsbook_y'][x]) + ' sportsbooks') 
 
-    if valuable_data["bestDeviationTeam2"][x] > 0 and valuable_data["bestDeviationTeam2"][x] > valuable_data["bestDeviationTeam1"][x] and valuable_data["team2MoneyLine"][x] == valuable_data["bestTeam2MoneyLine"][x]: 
-        print("Bet " + str(valuable_data["kellyBetTeam2"][x]) +  " on " + np.array(valuable_data["team2"])[x] + " at " + str(np.array(valuable_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(valuable_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(valuable_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(valuable_data["average_team2_ml"])[x]) + ' as determiined by ' + str(valuable_data['sportsbook_y'][x]) + ' sportsbooks') 
-        
-print("")
-print("")
-print("End of betting recommendations, now time for betting cut offs...")
-print("")
-print("")
-for x in range(0, len(consensus_data)):
-    if consensus_data["sportsbook"][x] > 3: 
-        print("Betting cut off for " + str(consensus_data.index.get_level_values(0)[x]) +  " is " + str(np.array(consensus_data["cutOffMLTeam1"])[x]) + " when consensus chance of winning is " + str(np.array(consensus_data["consensusTeam1Probability"])[x])) 
-        print("Betting cut off for " + str(consensus_data.index.get_level_values(1)[x]) +  " is " + str(np.array(consensus_data["cutOffMLTeam2"])[x]) + " when consensus chance of winning is " + str(np.array(consensus_data["consensusTeam2Probability"])[x]))
-        
-        
+    if merged_data["bestDeviationTeam2"][x] > 0 and merged_data["bestDeviationTeam2"][x] > merged_data["bestDeviationTeam1"][x] and merged_data["team2MoneyLine"][x] == merged_data["bestTeam2MoneyLine"][x]: 
+        print("Bet " + str(merged_data["kellyBetTeam2"][x]) +  " on " + np.array(merged_data["team2"])[x] + " at " + str(np.array(merged_data["bestTeam2MoneyLine"])[x]) + " at " + np.array(merged_data["sportsbook_x"])[x] + " for deviation of " + str(np.array(merged_data["bestDeviationTeam2"])[x]) + ' while average moneyline is ' +  str(np.array(merged_data["average_team2_ml"])[x]) + ' as determiined by ' + str(merged_data['sportsbook_y'][x]) + ' sportsbooks') 
+       
         
         
 
