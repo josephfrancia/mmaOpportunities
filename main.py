@@ -122,6 +122,8 @@ betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
 
 #pointsbet
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://nj.pointsbet.com/sports/mma/UFC")
 pointsbet_data_html = driver.find_elements_by_css_selector('.f14nmd6v')
 pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
 pointsbet_names = list(x[0] for x in pointsbet_relevant_data)
