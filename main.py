@@ -33,7 +33,7 @@ draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftking
 #bet-mgm
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
-t.sleep(random.randint(10, 20))
+t.sleep(random.randint(25, 30))
 betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
 betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
 betmgm_odds = [x.text for x in betmgm_odds_html][8:]
@@ -125,13 +125,14 @@ caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "caesars")
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://nj.pointsbet.com/sports/mma/UFC")
 t.sleep(random.randint(10, 20))
-pointsbet_data_html = driver.find_elements_by_css_selector('.f14nmd6v')
+pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
 pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
 
 try:
-    pointsbet_names = list(x[0] for x in pointsbet_relevant_data)
-    pointsbet_odds = list(int(x[1]) for x in pointsbet_relevant_data)
+    pointsbet_names = list(chain(*[[x[0], x[2]] for x in pointsbet_relevant_data]))
+    pointsbet_odds = list(chain(*[[x[1], x[3]] for x in pointsbet_relevant_data]))
     pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "pointsbet") 
+
 except: 
     pointsbet_df = pd.DataFrame()   
 
