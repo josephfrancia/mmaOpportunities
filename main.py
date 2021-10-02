@@ -33,19 +33,28 @@ draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftking
 #bet-mgm
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
-t.sleep(random.randint(25, 30))
+t.sleep(random.randint(10, 20))
 betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
 betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
-betmgm_odds = [x.text for x in betmgm_odds_html][8:]
+length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
+betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
 
 try:
     betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
     betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
-    betmgm_names = [x[:-3] for x in betmgm_names]
+    betmgm_names = [x[:-3] for x in betmgm_names if x != '']
     betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
 except: 
-    betmgm_df = pd.DataFrame()   
-
+    try: 
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
+        t.sleep(random.randint(10, 20))
+        betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
+        betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+        length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
+        betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
+    except: 
+        betmgm_df = pd.DataFrame()   
 
 #fanduel
 driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -56,7 +65,6 @@ valid_indices = [len(x)==6 for x in fanduel_data]
 fanduel_relevant_data = list(compress(fanduel_data, valid_indices))
 fanduel_names = list(chain(*[[x[0], x[1]] for x in fanduel_relevant_data]))
 fanduel_odds = list(chain(*[[x[2], x[3]] for x in fanduel_relevant_data]))
-
 fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel") 
 
 #betonline
@@ -88,7 +96,11 @@ bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
 bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
 bovada_names = [x.text for x in bovada_names_html]
 
-bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
+
+try:
+    bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
+except: 
+    bovada_df = pd.DataFrame()   
 
 #mybookie
 driver = webdriver.Chrome(ChromeDriverManager().install())
