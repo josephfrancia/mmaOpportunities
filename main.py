@@ -31,19 +31,19 @@ draftkings_odds = [int(x.text) for x in draftkings_odds_html if x.text != '']
 draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings") 
 
 #bet-mgm
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
-t.sleep(random.randint(10, 20))
-betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
-betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
-length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
-betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
-
 try:
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
+    t.sleep(random.randint(10, 20))
+    betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
+    betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+    length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
+    betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
     betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
     betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
     betmgm_names = [x[:-3] for x in betmgm_names if x != '']
     betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
+
 except: 
     try: 
         driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -53,6 +53,10 @@ except:
         betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
         length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
         betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
+        betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
+        betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
+        betmgm_names = [x[:-3] for x in betmgm_names if x != '']
+        betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
     except: 
         betmgm_df = pd.DataFrame()   
 
