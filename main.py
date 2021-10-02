@@ -37,10 +37,15 @@ t.sleep(random.randint(10, 20))
 betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
 betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
 betmgm_odds = [x.text for x in betmgm_odds_html][8:]
-betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
-betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
-betmgm_names = [x[:-3] for x in betmgm_names]
-betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
+
+try:
+    betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
+    betmgm_names = list(chain(*[[x[0], x[1]] for x in betmgm_names]))
+    betmgm_names = [x[:-3] for x in betmgm_names]
+    betmgm_df = cleanMoneylineData(betmgm_names, betmgm_odds, "betmgm") 
+except: 
+    betmgm_df = pd.DataFrame()   
+
 
 #fanduel
 driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -110,8 +115,8 @@ mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://www.williamhill.com/us/nj/bet/ufcmma/events/all")
 t.sleep(random.randint(10, 20))
-betcaesars_odds_html = driver.find_elements_by_css_selector('.eventInfo')
-betcaesars_names_html = driver.find_elements_by_css_selector('.SelectionOption')
+betcaesars_names_html = driver.find_elements_by_css_selector('.eventInfo')
+betcaesars_odds_html = driver.find_elements_by_css_selector('.SelectionOption')
 betcaesars_odds = [x.text for x in betcaesars_odds_html]
 betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
