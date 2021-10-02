@@ -219,11 +219,16 @@ betmgm_number_of_rows = len(betmgm_index)
 bovada_index = bovada_df.index
 bovada_number_of_rows = len(bovada_index)
 
+caesars_index = caesars_df.index
+caesars_number_of_rows = len(caesars_index)
+
 print("Draftkings has " + str(draftkings_number_of_rows) + " rows")
 print("Fanduel has " + str(fanduel_number_of_rows) + " rows")
 print("Betonline has " + str(betonline_number_of_rows) + " rows")
 print("Mybookie has " + str(mybookie_number_of_rows) + " rows")
 print("Betmgm has " + str(betmgm_number_of_rows) + " rows")
 print("Bovada has " + str(bovada_number_of_rows) + " rows")
+print("Caesars has " + str(caesars_number_of_rows) + " rows")
+
 
 
