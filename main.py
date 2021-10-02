@@ -117,7 +117,7 @@ betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
 
 #merging data 
-merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, betcaesars_names])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, caesars_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
