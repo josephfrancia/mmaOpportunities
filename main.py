@@ -119,16 +119,23 @@ betcaesars_names_html = driver.find_elements_by_css_selector('.eventInfo')
 betcaesars_odds_html = driver.find_elements_by_css_selector('.SelectionOption')
 betcaesars_odds = [x.text for x in betcaesars_odds_html]
 betcaesars_names = [x.text for x in betcaesars_names_html]
-caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
+caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "caesars") 
 
 #pointsbet
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://nj.pointsbet.com/sports/mma/UFC")
+t.sleep(random.randint(10, 20))
 pointsbet_data_html = driver.find_elements_by_css_selector('.f14nmd6v')
 pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
-pointsbet_names = list(x[0] for x in pointsbet_relevant_data)
-pointsbet_odds = list(int(x[1]) for x in pointsbet_relevant_data)
-pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "draftkings") 
+
+try:
+    pointsbet_names = list(x[0] for x in pointsbet_relevant_data)
+    pointsbet_odds = list(int(x[1]) for x in pointsbet_relevant_data)
+    pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "pointsbet") 
+except: 
+    pointsbet_df = pd.DataFrame()   
+
+
 
 #merging data 
 merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, caesars_df, pointsbet_df])
