@@ -106,10 +106,18 @@ mybookie_names = [x.split('\n') for x in mybookie_names]
 mybookie_names = sum(mybookie_names, [])
 mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
 
-
+#caesars
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://www.williamhill.com/us/nj/bet/ufcmma/events/all")
+t.sleep(random.randint(10, 20))
+betcaesars_odds_html = driver.find_elements_by_css_selector('.eventInfo')
+betcaesars_names_html = driver.find_elements_by_css_selector('.SelectionOption')
+betcaesars_odds = [x.text for x in betcaesars_odds_html]
+betcaesars_names = [x.text for x in betcaesars_names_html]
+caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
 
 #merging data 
-merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, betcaesars_names])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
