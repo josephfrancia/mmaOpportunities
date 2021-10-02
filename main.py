@@ -121,8 +121,15 @@ betcaesars_odds = [x.text for x in betcaesars_odds_html]
 betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "betmgm") 
 
+#pointsbet
+pointsbet_data_html = driver.find_elements_by_css_selector('.f14nmd6v')
+pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
+pointsbet_names = list(x[0] for x in pointsbet_relevant_data)
+pointsbet_odds = list(int(x[1]) for x in pointsbet_relevant_data)
+pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "draftkings") 
+
 #merging data 
-merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, caesars_df])
+merged_data = pd.concat([draftkings_df, fanduel_df, betonline_df, mybookie_df, betmgm_df, bovada_df, caesars_df, pointsbet_df])
 
 num_unique_sportsbooks = pd.DataFrame(merged_data.groupby(['team1', 'team2']).sportsbook.nunique())
 
@@ -227,6 +234,9 @@ bovada_number_of_rows = len(bovada_index)
 caesars_index = caesars_df.index
 caesars_number_of_rows = len(caesars_index)
 
+pointsbet_index = pointsbet_df.index
+pointsbet_number_of_rows = len(pointsbet_index)
+
 print("Draftkings has " + str(draftkings_number_of_rows) + " rows")
 print("Fanduel has " + str(fanduel_number_of_rows) + " rows")
 print("Betonline has " + str(betonline_number_of_rows) + " rows")
@@ -234,6 +244,8 @@ print("Mybookie has " + str(mybookie_number_of_rows) + " rows")
 print("Betmgm has " + str(betmgm_number_of_rows) + " rows")
 print("Bovada has " + str(bovada_number_of_rows) + " rows")
 print("Caesars has " + str(caesars_number_of_rows) + " rows")
+print("Pointsbet has " + str(pointsbet_number_of_rows) + " rows")
+
 
 
 
