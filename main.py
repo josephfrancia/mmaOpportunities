@@ -92,40 +92,74 @@ betonline_names = [x for x in betonline_data if re.sub('[\s+]', '', re.sub('-', 
 betonline_df = cleanMoneylineData(betonline_names, betonline_odds, "betonline") 
 
 #bovada
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://www.bovada.lv/sports/ufc-mma")
-t.sleep(random.randint(30, 40))
-bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
-bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
-bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
-bovada_names = [x.text for x in bovada_names_html]
-
-
 try:
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get("https://www.bovada.lv/sports/ufc-mma")
+    t.sleep(random.randint(30, 40))
+    bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
+    bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
+    bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
+    bovada_names = [x.text for x in bovada_names_html]
     bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
+
 except: 
-    bovada_df = pd.DataFrame()   
+    try: 
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get("https://www.bovada.lv/sports/ufc-mma")
+        t.sleep(random.randint(30, 40))
+        bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
+        bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
+        bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
+        bovada_names = [x.text for x in bovada_names_html]
+        bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
+    except: 
+        bovada_df = pd.DataFrame()   
 
 #mybookie
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get('https://mybookie.ag/sportsbook/ufc/')
-t.sleep(random.randint(10, 20))
+try: 
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get('https://mybookie.ag/sportsbook/ufc/')
+    t.sleep(random.randint(10, 20))
 
-mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
-mybookie_odds = np.array([x.text for x in mybookie_odds_html])
-mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
+    mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
+    mybookie_odds = np.array([x.text for x in mybookie_odds_html])
+    mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
 
-mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
-mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
-mybookie_names = []
-i = 0
-while i < len(mybookie_html_cleaned): 
-    if i == 1 or ((i-1)%4==0): 
-        mybookie_names.append(mybookie_html_cleaned[i])
-    i += 1
-mybookie_names = [x.split('\n') for x in mybookie_names]
-mybookie_names = sum(mybookie_names, [])
-mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
+    mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
+    mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
+    mybookie_names = []
+    i = 0
+    while i < len(mybookie_html_cleaned): 
+        if i == 1 or ((i-1)%4==0): 
+            mybookie_names.append(mybookie_html_cleaned[i])
+        i += 1
+    mybookie_names = [x.split('\n') for x in mybookie_names]
+    mybookie_names = sum(mybookie_names, [])
+    mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
+
+except: 
+    try: 
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get('https://mybookie.ag/sportsbook/ufc/')
+        t.sleep(random.randint(10, 20))
+
+        mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
+        mybookie_odds = np.array([x.text for x in mybookie_odds_html])
+        mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
+
+        mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
+        mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
+        mybookie_names = []
+        i = 0
+        while i < len(mybookie_html_cleaned): 
+            if i == 1 or ((i-1)%4==0): 
+                mybookie_names.append(mybookie_html_cleaned[i])
+            i += 1
+        mybookie_names = [x.split('\n') for x in mybookie_names]
+        mybookie_names = sum(mybookie_names, [])
+        mybookie_df = cleanMoneylineData(mybookie_names, mybookie_odds, "mybookie")
+    except: 
+        mybookie_df = pd.DataFrame() 
 
 #caesars
 driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -138,19 +172,28 @@ betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "caesars") 
 
 #pointsbet
-driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get("https://nj.pointsbet.com/sports/mma/UFC")
-t.sleep(random.randint(10, 20))
-pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
-pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
-
 try:
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get("https://nj.pointsbet.com/sports/mma/UFC")
+    t.sleep(random.randint(10, 20))
+    pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
+    pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
     pointsbet_names = list(chain(*[[x[0], x[2]] for x in pointsbet_relevant_data]))
     pointsbet_odds = list(chain(*[[x[1], x[3]] for x in pointsbet_relevant_data]))
     pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "pointsbet") 
 
 except: 
-    pointsbet_df = pd.DataFrame()   
+    try: 
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get("https://nj.pointsbet.com/sports/mma/UFC")
+        t.sleep(random.randint(10, 20))
+        pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
+        pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
+        pointsbet_names = list(chain(*[[x[0], x[2]] for x in pointsbet_relevant_data]))
+        pointsbet_odds = list(chain(*[[x[1], x[3]] for x in pointsbet_relevant_data]))
+        pointsbet_df = cleanMoneylineData(pointsbet_names, pointsbet_odds, "pointsbet") 
+    except: 
+        pointsbet_df = pd.DataFrame()
 
 
 
