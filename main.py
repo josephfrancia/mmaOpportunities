@@ -63,13 +63,13 @@ except:
 #fanduel
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://sportsbook.fanduel.com/mma?tab=ufc-fights")
-fanduel_raw_data = driver.find_elements_by_css_selector('.bh')
-fanduel_data = [x.text.split('\n') for x in fanduel_raw_data]
-valid_indices = [len(x)==6 for x in fanduel_data]
-fanduel_relevant_data = list(compress(fanduel_data, valid_indices))
-fanduel_names = list(chain(*[[x[0], x[1]] for x in fanduel_relevant_data]))
-fanduel_odds = list(chain(*[[x[2], x[3]] for x in fanduel_relevant_data]))
+t.sleep(random.randint(10, 20))
+fanduel_odds_html = driver.find_elements_by_css_selector('.n')
+fanduel_names_html = driver.find_elements_by_css_selector('.hr')
+fanduel_odds = [x.text for x in fanduel_odds_html if is_number(x.text)]
+fanduel_names = [x.text for x in fanduel_names_html]
 fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel") 
+
 
 #betonline
 driver = webdriver.Chrome(ChromeDriverManager().install())
