@@ -60,13 +60,14 @@ except:
     except: 
         betmgm_df = pd.DataFrame()   
 
+
 #fanduel
 try: 
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get("https://sportsbook.fanduel.com/mma?tab=ufc-fights")
     t.sleep(random.randint(10, 20))
     fanduel_odds_html = driver.find_elements_by_css_selector('.n')
-    fanduel_names_html = driver.find_elements_by_css_selector('.hr')
+    fanduel_names_html = driver.find_elements_by_css_selector('.ib')
     fanduel_odds = [x.text for x in fanduel_odds_html if is_number(x.text)]
     fanduel_names = [x.text for x in fanduel_names_html]
     fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel") 
