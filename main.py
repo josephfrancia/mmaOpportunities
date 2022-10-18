@@ -3,6 +3,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 import requests 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 import time as t
@@ -23,10 +24,10 @@ from sportsbooks import getKellyBet
 #draftkings
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get('https://sportsbook.draftkings.com/leagues/mma/ufc')
-draftkings_odds_html = driver.find_elements_by_css_selector('.default-color')
+draftkings_odds_html = driver.find_elements(By.CSS_SELECTOR, '.default-color')
 draftkings_odds_raw = [x.text for x in draftkings_odds_html]
 draftkings_odds = [int(str(x.replace("−", "-"))) if x[0] == "−" else int(x) for x in draftkings_odds_raw]
-draftkings_names_html = driver.find_elements_by_css_selector('.sportsbook-outcome-cell__label')
+draftkings_names_html = driver.find_elements(By.CSS_SELECTOR, '.sportsbook-outcome-cell__label')
 draftkings_names = [x.text for x in draftkings_names_html]
 draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings")
 
@@ -36,8 +37,8 @@ try:
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
     t.sleep(random.randint(10, 20))
-    betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
-    betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+    betmgm_odds_html = driver.find_elements(By.CSS_SELECTOR,'.option-indicator')
+    betmgm_names_html = driver.find_elements(By.CSS_SELECTOR,'.participants-pair-game')
     length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
     betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
     betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
@@ -50,8 +51,8 @@ except:
         driver = webdriver.Chrome(ChromeDriverManager().install())
         driver.get("https://sports.co.betmgm.com/en/sports/mma-45/betting/usa-9")
         t.sleep(random.randint(10, 20))
-        betmgm_odds_html = driver.find_elements_by_css_selector('.option-indicator')
-        betmgm_names_html = driver.find_elements_by_css_selector('.participants-pair-game')
+        betmgm_odds_html = driver.find_elements(By.CSS_SELECTOR,'.option-indicator')
+        betmgm_names_html = driver.find_elements(By.CSS_SELECTOR,'.participants-pair-game')
         length_of_bet_mgm_odds = len([x.text for x in betmgm_odds_html])
         betmgm_odds = [x.text for x in betmgm_odds_html if x != ''][(length_of_bet_mgm_odds- (len(betmgm_names_html) * 2)):]
         betmgm_names = [x.text.split('\n') for x in betmgm_names_html]
@@ -67,8 +68,8 @@ try:
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get("https://sportsbook.fanduel.com/mma?tab=ufc-fights")
     t.sleep(random.randint(10, 20))
-    fanduel_odds_html = driver.find_elements_by_css_selector('.n')
-    fanduel_names_html = driver.find_elements_by_css_selector('.ib')
+    fanduel_odds_html = driver.find_elements(By.CSS_SELECTOR, '.n')
+    fanduel_names_html = driver.find_elements(By.CSS_SELECTOR, '.ib')
     fanduel_odds = [x.text for x in fanduel_odds_html if is_number(x.text)]
     fanduel_names = [x.text for x in fanduel_names_html]
     fanduel_df = cleanMoneylineData(fanduel_names, fanduel_odds, "fanduel") 
@@ -80,7 +81,7 @@ except:
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://classic.betonline.ag/sportsbook/martial-arts/mma")
 t.sleep(random.randint(10, 20))
-betonline_data_html = driver.find_elements_by_css_selector('.bdevtt')
+betonline_data_html = driver.find_elements(By.CSS_SELECTOR, '.bdevtt')
 betonline_data = np.array([x.text for x in betonline_data_html])
 indices_to_remove = []
 for i in range(0, len(betonline_data)):
@@ -101,8 +102,8 @@ try:
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get("https://www.bovada.lv/sports/ufc-mma")
     t.sleep(random.randint(30, 40))
-    bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
-    bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
+    bovada_odds_html = driver.find_elements(By.CSS_SELECTOR, '.bet-btn')
+    bovada_names_html = driver.find_elements(By.CSS_SELECTOR, '.competitor-name')
     bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
     bovada_names = [x.text for x in bovada_names_html]
     bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
@@ -112,8 +113,8 @@ except:
         driver = webdriver.Chrome(ChromeDriverManager().install())
         driver.get("https://www.bovada.lv/sports/ufc-mma")
         t.sleep(random.randint(30, 40))
-        bovada_odds_html = driver.find_elements_by_css_selector('.bet-btn')
-        bovada_names_html = driver.find_elements_by_css_selector('.competitor-name')
+        bovada_odds_html = driver.find_elements(By.CSS_SELECTOR, '.bet-btn')
+        bovada_names_html = driver.find_elements(By.CSS_SELECTOR, '.competitor-name')
         bovada_odds = [100 if x.text == 'EVEN' else x.text for x in bovada_odds_html]
         bovada_names = [x.text for x in bovada_names_html]
         bovada_df = cleanMoneylineData(bovada_names, bovada_odds, "bovada") 
@@ -126,11 +127,11 @@ try:
     driver.get('https://mybookie.ag/sportsbook/ufc/')
     t.sleep(random.randint(10, 20))
 
-    mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
+    mybookie_odds_html = driver.find_elements(By.CSS_SELECTOR, ".lines-odds")
     mybookie_odds = np.array([x.text for x in mybookie_odds_html])
     mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
 
-    mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
+    mybookie_html = driver.find_elements(By.CSS_SELECTOR, ".justify-content-around")
     mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
     mybookie_names = []
     i = 0
@@ -148,11 +149,11 @@ except:
         driver.get('https://mybookie.ag/sportsbook/ufc/')
         t.sleep(random.randint(10, 20))
 
-        mybookie_odds_html = driver.find_elements_by_css_selector(".lines-odds")
+        mybookie_odds_html = driver.find_elements(By.CSS_SELECTOR, ".lines-odds")
         mybookie_odds = np.array([x.text for x in mybookie_odds_html])
         mybookie_odds = mybookie_odds[[is_number(x) for x in mybookie_odds]]
 
-        mybookie_html = driver.find_elements_by_css_selector(".justify-content-around")
+        mybookie_html = driver.find_elements(By.CSS_SELECTOR, ".justify-content-around")
         mybookie_html_cleaned = np.array([x.text for x in mybookie_html])
         mybookie_names = []
         i = 0
@@ -170,8 +171,8 @@ except:
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://www.williamhill.com/us/nj/bet/ufcmma/events/all")
 t.sleep(random.randint(10, 20))
-betcaesars_names_html = driver.find_elements_by_css_selector('.eventInfo')
-betcaesars_odds_html = driver.find_elements_by_css_selector('.SelectionOption')
+betcaesars_names_html = driver.find_elements(By.CSS_SELECTOR, '.eventInfo') 
+betcaesars_odds_html = driver.find_elements(By.CSS_SELECTOR, '.SelectionOption')
 betcaesars_odds = [x.text for x in betcaesars_odds_html]
 betcaesars_names = [x.text for x in betcaesars_names_html]
 caesars_df = cleanMoneylineData(betcaesars_names, betcaesars_odds, "caesars") 
@@ -181,7 +182,7 @@ try:
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get("https://nj.pointsbet.com/sports/mma/UFC")
     t.sleep(random.randint(10, 20))
-    pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
+    pointsbet_data_html = driver.find_elements(By.CSS_SELECTOR, '.faxe22p')
     pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
     pointsbet_names = list(chain(*[[x[0], x[2]] for x in pointsbet_relevant_data]))
     pointsbet_odds = list(chain(*[[x[1], x[3]] for x in pointsbet_relevant_data]))
@@ -192,7 +193,7 @@ except:
         driver = webdriver.Chrome(ChromeDriverManager().install())
         driver.get("https://nj.pointsbet.com/sports/mma/UFC")
         t.sleep(random.randint(10, 20))
-        pointsbet_data_html = driver.find_elements_by_css_selector('.faxe22p')
+        pointsbet_data_html = driver.find_elements(By.CSS_SELECTOR, '.faxe22p')
         pointsbet_relevant_data = [x.text.split('\n') for x in pointsbet_data_html]
         pointsbet_names = list(chain(*[[x[0], x[2]] for x in pointsbet_relevant_data]))
         pointsbet_odds = list(chain(*[[x[1], x[3]] for x in pointsbet_relevant_data]))
