@@ -21,14 +21,32 @@ from sportsbooks import getKellyBet
 
 
 #draftkings
-draftkings_url = 'https://sportsbook.draftkings.com/leagues/mma/2162?category=fight-lines&subcategory=moneyline'
-draftkings_soup_object = BeautifulSoup(requests.get(draftkings_url).text)
-draftkings_names_html = draftkings_soup_object.select(".sportsbook-outcome-cell__label")
-draftkings_odds_html = draftkings_soup_object.select(".sportsbook-outcome-cell__element")
-draftkings_names = [x.text for x in draftkings_names_html]
-draftkings_odds = [int(x.text) for x in draftkings_odds_html if x.text != '']
+try:
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get('https://sportsbook.draftkings.com/leagues/mma/ufc')
+    draftkings_odds_html = driver.find_elements_by_css_selector('.default-color')
+    draftkings_odds_raw = [x.text for x in draftkings_odds_html]
+    draftkings_odds = [int(str(x.replace("−", "-"))) if x[0] == "−" else int(x) for x in draftkings_odds_raw]
+    draftkings_names_html = driver.find_elements_by_css_selector('.sportsbook-outcome-cell__label')
+    draftkings_names = [x.text for x in draftkings_names_html]
+    draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings") 
+    draftkings_df
 
-draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings") 
+except: 
+    try: 
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get('https://sportsbook.draftkings.com/leagues/mma/ufc')
+        draftkings_odds_html = driver.find_elements_by_css_selector('.default-color')
+        draftkings_odds_raw = [x.text for x in draftkings_odds_html]
+        draftkings_odds = [int(str(x.replace("−", "-"))) if x[0] == "−" else int(x) for x in draftkings_odds_raw]
+        draftkings_names_html = driver.find_elements_by_css_selector('.sportsbook-outcome-cell__label')
+        draftkings_names = [x.text for x in draftkings_names_html]
+        draftkings_df = cleanMoneylineData(draftkings_names, draftkings_odds, "draftkings") 
+
+    except: 
+        draftkings_df = pd.DataFrame()  
+
+
 
 #bet-mgm
 try:
