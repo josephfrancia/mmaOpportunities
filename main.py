@@ -171,6 +171,8 @@ except:
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://www.williamhill.com/us/nj/bet/ufcmma/events/all")
 t.sleep(random.randint(10, 20))
+buttons_to_expand = driver.find_elements(By.CSS_SELECTOR, '.unexpanded') 
+[x.click() for x in buttons_to_expand]
 betcaesars_names_html = driver.find_elements(By.CSS_SELECTOR, '.eventInfo') 
 betcaesars_odds_html = driver.find_elements(By.CSS_SELECTOR, '.SelectionOption')
 betcaesars_odds = [x.text for x in betcaesars_odds_html]
